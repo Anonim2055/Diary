@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from flask import Flask, request, jsonify, render_template
+from imgur_api import upload as img_up
 import requests
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
@@ -7,29 +8,29 @@ app = Flask(__name__)
 
 try:
 #check if mongoDB work
-    mongo=MongoClient(host="localhost",port=27017, serverSelectionTimeoutMs=5000)
+    mongo=MongoClient(host="localhost", port=27017, serverSelectionTimeoutMs=5000)
     db = mongo.flask
     print("Mongo Connect")
 except Exception:
     print("Unable")
 
-@app.route('/home',methods=['GET'])
+@app.route('/home', methods=['GET'])
 def hom():
     return render_template("home.html")
 
-@app.route('/',methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     resp = jsonify({
         "message":"Flask run"
     })
     return resp
 
-@app.route("/login",methods=['POST','GET'])
+@app.route("/login", methods=['POST','GET'])
 def log():
     return render_template("login.html")
 
 
-@app.route("/signup",methods=['POST','GET'])
+@app.route("/signup", methods=['POST','GET'])
 def home():
     # Render the index.html template
     return render_template("signup.html")
@@ -42,30 +43,13 @@ def home():
 
 
 
-
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    with open('cid', 'r') as t_id:
-        cid = str(t_id.read())
-    headers = {'Authorization': f'Client-ID {cid}'} #it has to be "cid" file with client id for imgur in it
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
     file = request.files['file']
-
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-    response = requests.post('https://api.imgur.com/3/image', headers=headers, files={'image': file})
-    
-    
-    if response.status_code == 200:
-        imgur_response = response.json()
-        img_url = imgur_response['data']['link']
-        return jsonify({'message': 'Image uploaded successfully', 'image_url': img_url}), 200
-    else:
-        print("Image upload failed. Status code:", response.status_code)
-        return jsonify({'error': 'Image upload failed'}), 500
+
+    return img_up(file)
 
 
 @app.errorhandler(404)
