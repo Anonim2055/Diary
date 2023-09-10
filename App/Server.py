@@ -85,7 +85,7 @@ def add_user():
         # return error message with 400 status code
 
     result = db.users.insert_one({
-        "email":body["email"],
+        "email": body["email"],
         "name": body["name"],
         "password": body["password"]
     })
