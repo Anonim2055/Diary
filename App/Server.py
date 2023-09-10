@@ -2,6 +2,8 @@ from pymongo import MongoClient
 from flask import Flask, request, jsonify, render_template
 import requests
 app = Flask(__name__)
+# with open('cid', 'r') as t_id:
+#     cid = str(t_id.read())
 
 try:
 #check if mongoDB work
@@ -17,7 +19,7 @@ def hom():
 
 @app.route('/',methods=['GET'])
 def index():
-    resp=jsonify({
+    resp = jsonify({
         "message":"Flask run"
     })
     return resp
@@ -27,16 +29,14 @@ def log():
     return render_template("login.html")
 
 
-@app.route("/signUp",methods=['POST','GET'])
+@app.route("/signup",methods=['POST','GET'])
 def home():
     # Render the index.html template
     return render_template("signup.html")
 # @app.route('/index.html',methods=['GET'])
 #     def indexx()
 
-@app.route("/testup", methods=['POST','GET'])
-def test():
-    return render_template("test-upload.html")
+
 
 
 
@@ -46,8 +46,9 @@ def test():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    client_id='275b95ebffdeabc'
-    headers = {'Authorization': f'Client-ID {client_id}'}
+    with open('cid', 'r') as t_id:
+        cid = str(t_id.read())
+    headers = {'Authorization': f'Client-ID {cid}'}
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -122,7 +123,7 @@ if __name__ == "__main__":
 
 # def imgur(file):
 
-#     client_id='275b95ebffdeabc'
+#     client_id=cid
 #     headers = {'Authorization': f'Client-ID {client_id}'}
 #     response = request.post('https://api.imgur.com/3/image', headers=headers, files=file)
 

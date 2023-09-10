@@ -72,12 +72,19 @@
         <p>I-Diary is a personal journal app that helps you record your thoughts, feelings, and experiences. You can write, draw, or speak your entries, and I-Diary will save them for you. You can also add photo of the day every day.</p>
         <!-- Use a button element to start the app -->
         <button onclick="startApp()">Start writing</button>
+        <button onclick="upload()">Upload</button>
     </div>
     <!-- Use a script element to define the startApp function -->
     <script>
         // Define a function that redirects the user to the app page
         function startApp() {
-            window.location.href = "/signUp";
+            window.location.href = "/signup";
+        }
+    </script>
+        <script>
+        // Define a function that redirects the user to the app page
+        function upload() {
+            window.location.href = "/upload";
         }
     </script>
 </body>
