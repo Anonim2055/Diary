@@ -95,7 +95,9 @@ def add_user():
     })
     return resp
 
-
+@app.route('/test', methods=['GET'])
+def sUp():
+    return render_template('signup_post_test.html')
 
 
 if __name__ == "__main__":
