@@ -48,7 +48,7 @@ def home():
 def upload_file():
     with open('cid', 'r') as t_id:
         cid = str(t_id.read())
-    headers = {'Authorization': f'Client-ID {cid}'}
+    headers = {'Authorization': f'Client-ID {cid}'} #it has to be "cid" file with client id for imgur in it
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
