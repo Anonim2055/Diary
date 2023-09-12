@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from flask import Flask, request, jsonify, render_template
 from imgur_api import upload as img_up
 import requests
+import json
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
 #     cid = str(t_id.read())
@@ -108,16 +109,19 @@ def sUp():
 
 @app.route('/form-example', methods=['POST']) # разрешаем только POST-запросы
 def form_example():
-    # получаем данные из формы
     email = request.form.get('email')
-    name = "kek"
-
-
-    # выводим данные на экран
-    print(name, email)
-
-    # или возвращаем их в виде ответа
-    return f'Hello {name}, your email is {email}'
+    password = request.form.get('password')
+    name = request.form.get('name')
+    user = dict({'name': name, 'email': email, 'password' : password})
+    url = 'http://127.0.0.1:5000/users'
+    data = {'key1': 'value1', 'key2': 'value2'}
+    nuser = json.dumps(user)
+    headers = {
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, data=nuser, headers=headers)
+    return response
+    return f'Hello {name}, your email is {email}, your pass is{password}'
 
 
 
