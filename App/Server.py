@@ -95,9 +95,32 @@ def add_user():
     })
     return resp
 
+@app.route('/testu', methods=['POST'])
+def wtest():
+    text=request.json
+    return text
+
 @app.route('/test', methods=['GET'])
 def sUp():
     return render_template('signup_post_test.html')
+
+
+
+@app.route('/form-example', methods=['POST']) # разрешаем только POST-запросы
+def form_example():
+    # получаем данные из формы
+    email = request.form.get('email')
+    name = "kek"
+
+
+    # выводим данные на экран
+    print(name, email)
+
+    # или возвращаем их в виде ответа
+    return f'Hello {name}, your email is {email}'
+
+
+
 
 
 if __name__ == "__main__":
