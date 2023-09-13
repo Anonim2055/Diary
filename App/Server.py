@@ -4,17 +4,18 @@ from imgur_api import upload as img_up
 import requests
 import json
 app = Flask(__name__)
-#read host and port from text file
-dbkeys = open("mdb", "r").readlines()
-dbhost = dbkeys[0].split(':')[1]
-dbport = int(dbkeys[1].split(':')[1])
+# with open('cid', 'r') as t_id:
+#     cid = str(t_id.read())
+# dbkeys = open("mdb", "r").readlines()
+# dbhost = dbkeys[0].split(':')[1]
+# dbport = int(dbkeys[1].split(':')[1])
 try:
 #check if mongoDB work
-    mongo = MongoClient(host=dbhost, port=dbport, serverSelectionTimeoutMs=5000)
+    mongo = MongoClient(host='localhost', port=27017, serverSelectionTimeoutMs=5000)
     db = mongo.diary
-    print("Mongo connect")
+    print("Mongo Connect")
 except Exception:
-    print("Unable to connect to db")
+    print("Unable")
 
 @app.route('/home', methods=['GET'])
 def hom():
@@ -108,14 +109,13 @@ def sUp():
 
 
 
-@app.route('/form-example', methods=['POST']) # разрешаем только POST-запросы
+@app.route('/form-example', methods=['POST'])
 def form_example():
     email = request.form.get('email')
     password = request.form.get('password')
     name = request.form.get('name')
     user = dict({'name': name, 'email': email, 'password' : password})
     url = 'http://127.0.0.1:5000/users'
-    data = {'key1': 'value1', 'key2': 'value2'}
     nuser = json.dumps(user)
     headers = {
         "Content-Type": "application/json"
