@@ -4,16 +4,17 @@ from imgur_api import upload as img_up
 import requests
 import json
 app = Flask(__name__)
-# with open('cid', 'r') as t_id:
-#     cid = str(t_id.read())
-
+#read host and port from text file
+dbkeys = open("mdb", "r").readlines()
+dbhost = dbkeys[0].split(':')[1]
+dbport = int(dbkeys[1].split(':')[1])
 try:
 #check if mongoDB work
-    mongo=MongoClient(host="localhost", port=27017, serverSelectionTimeoutMs=5000)
-    db = mongo.flask
-    print("Mongo Connect")
+    mongo = MongoClient(host=dbhost, port=dbport, serverSelectionTimeoutMs=5000)
+    db = mongo.diary
+    print("Mongo connect")
 except Exception:
-    print("Unable")
+    print("Unable to connect to db")
 
 @app.route('/home', methods=['GET'])
 def hom():
@@ -120,7 +121,7 @@ def form_example():
         "Content-Type": "application/json"
     }
     response = requests.post(url, data=nuser, headers=headers)
-    return response
+    #return response
     return f'Hello {name}, your email is {email}, your pass is{password}'
 
 
