@@ -1,12 +1,17 @@
 <html>
 <head>
     <title>Choose image</title>
+    <script>
+    function uploadFile()
+    {
+    var form = document.forms["uploadForm"]; form.submit();
+    }
+</script>
 </head>
 <body>
-    <form action="upload" method="POST" enctype="multipart/form-data">
-        <p>Choose image to upload:</p>
-        <input type="file" name="file" accept="image/*">
-        <input type="submit" value="Upload image" name="submit">
-    </form>
+<form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm">
+    <p>Choose image to upload:</p>
+    <input type="file" name="file" accept="image/*" onchange="uploadFile()">
+     </form>
 </body>
 </html>

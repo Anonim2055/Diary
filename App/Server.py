@@ -7,8 +7,10 @@ app = Flask(__name__)
 # with open('cid', 'r') as t_id:
 #     cid = str(t_id.read())
 # dbkeys = open("mdb", "r").readlines()
-# dbhost = dbkeys[0].split(':')[1]
+# #dbhost = dbkeys[0].split(':')[1]
 # dbport = int(dbkeys[1].split(':')[1])
+# dbhost = dbkeys[0][dbkeys[0].index(":")+1:-1]
+# print ("dbport:","lol","dbhost:",dbhost)
 try:
 #check if mongoDB work
     mongo = MongoClient(host='localhost', port=27017, serverSelectionTimeoutMs=5000)
