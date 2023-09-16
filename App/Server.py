@@ -26,6 +26,7 @@ def hom():
 
 @app.route('/', methods=['GET'])
 def index():
+    # test
     resp = jsonify({
         "message":"Flask run"
     })
@@ -33,11 +34,13 @@ def index():
 
 @app.route("/login", methods=['POST','GET'])
 def log():
+    # test
     return render_template("login.html")
 
 
 @app.route("/signup", methods=['POST','GET'])
 def home():
+    # test
     # Render the index.html template
     return render_template("signup.html")
 # @app.route('/index.html',methods=['GET'])
@@ -48,7 +51,7 @@ def home():
 
 
 
-
+#test
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
@@ -56,6 +59,7 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
     response = img_up(file)
     # print(response)
+    # test
     upload_time = get_time()
     db.images.insert_one({
         "img_url": response['img_url'],
