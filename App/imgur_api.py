@@ -12,6 +12,7 @@ def upload(file):
         imgur_response = response.json()
         #print(imgur_response)
         img_url = imgur_response['data']['link']
+        #test
         #print(img_url)
         return {'img_url': img_url}
     else:
