@@ -1,6 +1,6 @@
 import requests
 from flask import jsonify
-#test
+
 
 def upload(file):
     with open('cid', 'r') as t_id:
@@ -10,11 +10,16 @@ def upload(file):
 
     if response.status_code == 200:
         imgur_response = response.json()
-        #print(imgur_response)
+        print(imgur_response)
         img_url = imgur_response['data']['link']
         #print(img_url)
-        return {'img_url': img_url}
+        return {
+            'img_url': img_url,
+            'status': "uploaded"
+                }
     else:
         print("Image upload failed. Status code:", response.status_code)
-        return jsonify({'error': 'Image upload failed'}), 500
+        return {
+            'error': 'Image upload failed'
+                }, 500
     

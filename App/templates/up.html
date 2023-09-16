@@ -1,24 +1,45 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Choose image</title>
-    <script>
-    function uploadFile()
-    {
-    var form = document.forms["uploadForm"]; form.submit();
-    }
-    function showLoading() {
-            document.getElementById("loading").style.display = "block";
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
-</script>
+
+        #loading {
+            display: none;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #loading img {
+            width: 200px; /* Укажите желаемую ширину изображения */
+            height: 200px; /* Укажите желаемую высоту изображения */
+        }
+    </style>
+    <script>
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+            document.querySelector('form').style.display = "none"; // Скрыть форму
+        }
+    </script>
 </head>
 <body>
-<form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm">
-    <p>Choose image to upload: </p>
-    <input type="file" name="file" accept="image/*" onchange="uploadFile()" onchange="showLoading">
-     </form>
-<div id="loading" style="display: none;">
-    <p>Loading...</p>
+<form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm" onsubmit="showLoading()">
+    <p>Choose image to upload:</p>
+    <input type="file" name="file" accept="image/*">
+    <input type="submit" value="Upload">
+</form>
+<div id="loading">
     <img src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading">
+    <p>Loading...</p>
 </div>
 </body>
 </html>

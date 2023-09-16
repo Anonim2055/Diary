@@ -26,21 +26,18 @@ def hom():
 
 @app.route('/', methods=['GET'])
 def index():
-    # test
-    resp = jsonify({
-        "message":"Flask run"
-    })
+
     return render_template('home.html')
 
 @app.route("/login", methods=['POST','GET'])
 def log():
-    # test
+
     return render_template("login.html")
 
 
 @app.route("/signup", methods=['POST','GET'])
 def home():
-    # test
+
     # Render the index.html template
     return render_template("signup.html")
 # @app.route('/index.html',methods=['GET'])
@@ -51,26 +48,30 @@ def home():
 
 
 
-#test
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
+
     response = img_up(file)
     # print(response)
-    # test
+
     upload_time = get_time()
-    db.images.insert_one({
+    try:
+        db.images.insert_one({
         "img_url": response['img_url'],
         "timestamp": upload_time
     })
-    return response
+    except Exception:
+
+        return '', 503
+
+    return jsonify(response['status'])
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+
 
 @app.route('/upload',methods=['GET'])
 def uf():
@@ -134,8 +135,15 @@ def form_example():
     return f'Hello {name}, your email is {email}, your pass is{password}'
 
 
+@app.route('/error')
+def always_return_500():
+    # return status code 500
+    return '', 500
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
