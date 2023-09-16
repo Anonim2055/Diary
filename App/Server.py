@@ -1,8 +1,9 @@
 from pymongo import MongoClient
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect
 from imgur_api import upload as img_up
 import requests
 import json
+from App.time import get_current_timestamp as get_time
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
 #     cid = str(t_id.read())
@@ -21,14 +22,14 @@ except Exception:
 
 @app.route('/home', methods=['GET'])
 def hom():
-    return render_template("home.html")
+    return redirect('/')
 
 @app.route('/', methods=['GET'])
 def index():
     resp = jsonify({
         "message":"Flask run"
     })
-    return resp
+    return render_template('home.html')
 
 @app.route("/login", methods=['POST','GET'])
 def log():
@@ -53,8 +54,14 @@ def upload_file():
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-
-    return img_up(file)
+    response = img_up(file)
+    # print(response)
+    upload_time = get_time()
+    db.images.insert_one({
+        "img_url": response['img_url'],
+        "timestamp": upload_time
+    })
+    return response
 
 
 @app.errorhandler(404)
@@ -71,15 +78,15 @@ def utest():
     istrue = request.args.get("istrue")
     # check if istrue is true
     if istrue == "true":
-        
+
         return "this is true", 200
     elif istrue == "false" :
-        
+
         return "this is  not true", 200
     else:
 
         return "Didn't get param", 200
-    
+
 @app.route('/users',methods=['POST'])
 def add_user():
     body = request.json
@@ -100,10 +107,6 @@ def add_user():
     })
     return resp
 
-@app.route('/testu', methods=['POST'])
-def wtest():
-    text=request.json
-    return text
 
 @app.route('/test', methods=['GET'])
 def sUp():

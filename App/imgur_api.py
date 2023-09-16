@@ -10,8 +10,11 @@ def upload(file):
 
     if response.status_code == 200:
         imgur_response = response.json()
+        #print(imgur_response)
         img_url = imgur_response['data']['link']
-        return jsonify({'message': 'Image uploaded successfully', 'image_url': img_url}), 200
+        #print(img_url)
+        return {'img_url': img_url}
     else:
         print("Image upload failed. Status code:", response.status_code)
         return jsonify({'error': 'Image upload failed'}), 500
+    
