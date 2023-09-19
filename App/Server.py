@@ -3,7 +3,9 @@ from flask import Flask, request, jsonify, render_template, redirect
 from imgur_api import upload as img_up
 import requests
 import json
-from App.time import get_current_timestamp as get_time
+import datetime
+from my_time import get_current_timestamp as get_time
+"""from time import get_current_timestamp"""
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
 #     cid = str(t_id.read())
@@ -145,12 +147,38 @@ def always_return_500():
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
+
+@app.route("/game", methods=['GET'])
+def get_image_url():
+    user_id = request.args.get("user_id")
+    #try:
+            # Find the document in MongoDB based on the user_id
+    user_data = db.images.find_one({"user_id": user_id})
+    print(user_data)
+    if user_data is not None:
+        img_url = user_data.get("img_url", "URL not available")
+                
+                # Assuming you've stored created_at as a timestamp
+        created_at_timestamp = user_data.get("timestamp", None)
+        created_at = None
+        if created_at_timestamp:
+                created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+
+        return jsonify({
+            "user_id": user_id,
+            "img_url": img_url,
+            "created_at": created_at
+                })
+    else:
+         return jsonify({"message": "User ID not found"}), 200
+
+    #except Exception as e:
+        #return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-
 
 # def imgur(file):
 
