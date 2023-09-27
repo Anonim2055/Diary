@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Photos</title>
+</head>
+<body>
+    <h1>User Photos</h1>
+
+    <ul>
+        {% for photo in photos %}
+        <li>
+            <img src="{{ photo.img_url }}" alt="User Photo">
+            <p>Upload date: {{ photo.created_at }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

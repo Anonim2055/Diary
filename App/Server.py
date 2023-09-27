@@ -4,7 +4,7 @@ from imgur_api import upload as img_up
 import requests
 import json
 import datetime
-from my_time import get_current_timestamp as get_time
+from get_timestamp import get_current_timestamp as get_time
 
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
@@ -149,35 +149,52 @@ def page_not_found(e):
 
 
 @app.route("/get_images", methods=['GET'])
-def get_image_url():
+def get_image_url(user_id=None):
+    us_id2=user_id
     user_id = request.args.get("user_id")
-
-    # Поиск всех документов с заданным user_id
+    if user_id == None:
+        user_id=us_id2
+    # search every 'user id'
     user_data_cursor = db.images.find({"user_id": user_id})
 
     user_data_list = []
 
-    # Проходим по каждому документу и добавляем его в список
+    # add everything to list
     for user_data in user_data_cursor:
         img_url = user_data.get("img_url", "URL not available")
         created_at_timestamp = user_data.get("timestamp", None)
         created_at = None
         if created_at_timestamp:
-            created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d')
 
         user_data_list.append({
             "user_id": user_id,
             "img_url": img_url,
             "created_at": created_at
         })
-
+    print(user_data_list)
     if user_data_list:
-        return (user_data_list)
+        print (user_data_list)
+        return user_data_list
     else:
-        return jsonify({"message": "User ID not found"}), 200
+        print ('bad')
+        return ({"message": "User ID not found"}), 200
 
     #except Exception as e:
         #return jsonify({"error": str(e)}), 500
+
+
+
+
+
+@app.route("/user_photos/<user_id>", methods=['GET'])
+def user_photos(user_id):
+    print(user_id)
+    photos = (get_image_url(user_id))
+    print ('_____________')
+    print(photos)
+    print('_____________')
+    return render_template("photos.html", photos=photos)
 
 
 if __name__ == "__main__":
