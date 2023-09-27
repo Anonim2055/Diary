@@ -5,7 +5,7 @@ import requests
 import json
 import datetime
 from my_time import get_current_timestamp as get_time
-"""from time import get_current_timestamp"""
+
 app = Flask(__name__)
 # with open('cid', 'r') as t_id:
 #     cid = str(t_id.read())
@@ -148,30 +148,33 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-
-@app.route("/game", methods=['GET'])
+@app.route("/get_images", methods=['GET'])
 def get_image_url():
     user_id = request.args.get("user_id")
-    #try:
-            # Find the document in MongoDB based on the user_id
-    user_data = db.images.find_one({"user_id": user_id})
-    print(user_data)
-    if user_data is not None:
+
+    # Поиск всех документов с заданным user_id
+    user_data_cursor = db.images.find({"user_id": user_id})
+
+    user_data_list = []
+
+    # Проходим по каждому документу и добавляем его в список
+    for user_data in user_data_cursor:
         img_url = user_data.get("img_url", "URL not available")
-                
-                # Assuming you've stored created_at as a timestamp
         created_at_timestamp = user_data.get("timestamp", None)
         created_at = None
         if created_at_timestamp:
-                created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d %H:%M:%S')
 
-        return jsonify({
+        user_data_list.append({
             "user_id": user_id,
             "img_url": img_url,
             "created_at": created_at
-                })
+        })
+
+    if user_data_list:
+        return (user_data_list)
     else:
-         return jsonify({"message": "User ID not found"}), 200
+        return jsonify({"message": "User ID not found"}), 200
 
     #except Exception as e:
         #return jsonify({"error": str(e)}), 500
