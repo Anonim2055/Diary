@@ -7,10 +7,10 @@ def upload(file):
         cid = str(t_id.read())
     headers = {'Authorization': f'Client-ID {cid}'} #it has to be "cid" file with client id for imgur in it
     response = requests.post('https://api.imgur.com/3/image', headers=headers, files={'image': file})
-
+    #print(response)
     if response.status_code == 200:
         imgur_response = response.json()
-        print(imgur_response)
+        #print(imgur_response)
         img_url = imgur_response['data']['link']
         #print(img_url)
         return {

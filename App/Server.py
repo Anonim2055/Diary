@@ -59,7 +59,7 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
 
     response = img_up(file)
-    # print(response)
+    #print(response)
 
     upload_time = get_time()
     try:
@@ -71,8 +71,9 @@ def upload_file():
     except Exception:
 
         return '', 503
-
-    return jsonify(response['status'])
+    page = str("user_photos/"+user_id)
+    return redirect(page)
+    #return jsonify(response['status'])
 
 @app.route('/upload', methods=['GET'])
 def uf():
