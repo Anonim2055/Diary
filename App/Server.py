@@ -37,7 +37,7 @@ def log():
     return render_template("login.html")
 
 
-@app.route("/signup", methods=['POST','GET'])
+@app.route("/signup", methods=['POST', 'GET'])
 def home():
 
     # Render the index.html template
@@ -54,6 +54,7 @@ def home():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
+    user_id = request.form.get("user_id")
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
@@ -64,7 +65,8 @@ def upload_file():
     try:
         db.images.insert_one({
         "img_url": response['img_url'],
-        "timestamp": upload_time
+        "timestamp": upload_time,
+        "user_id": user_id
     })
     except Exception:
 
@@ -72,12 +74,12 @@ def upload_file():
 
     return jsonify(response['status'])
 
-
-
-
-@app.route('/upload',methods=['GET'])
+@app.route('/upload', methods=['GET'])
 def uf():
-    return render_template('up.html'), 200
+    user_id = request.args.get("user_id")
+    if user_id == None:
+        return redirect('/')
+    return render_template('up.html', user_id=user_id)
 
 
 @app.route('/users', methods=['GET'])
