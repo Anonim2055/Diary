@@ -74,6 +74,7 @@
         <button onclick="startApp()">Start writing </button>
         <button onclick="logIn()">Login</button>
         <button onclick="upload()">Upload</button>
+        <button onclick="diary()">My Diary</button>
     </div>
     <!-- Use a script element to define the startApp function -->
     <script>
@@ -92,6 +93,12 @@
         // Define a function that redirects the user to the app page
         function upload() {
             window.location.href = "/upload";
+        }
+    </script>
+        <script>
+        // Define a function that redirects the user to the app page
+        function diary() {
+            window.location.href = "/user_photos/";
         }
     </script>
 </body>

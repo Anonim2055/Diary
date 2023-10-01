@@ -53,7 +53,6 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    description = request.form.get("description")
     file = request.files['file']
     user_id = request.form.get("user_id")
     if file.filename == '':
@@ -68,8 +67,8 @@ def upload_file():
 @app.route('/upload', methods=['GET'])
 def uf():
     user_id = request.args.get("user_id")
-    if user_id == None:
-        return redirect('/')
+    # if user_id == None:
+    #     return redirect('/')
     return render_template('up.html', user_id=user_id)
 
 @app.route('/desc', methods=['GET'])
