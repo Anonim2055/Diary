@@ -15,13 +15,15 @@
     </style>
 </head>
 <body>
-    <h1>User Photos</h1>
+    <h1>Your diary</h1>
 
     <ul>
         {% for photo in photos %}
         <li>
+            <p>Date: {{ photo.created_at }}</p>
             <img src="{{ photo.img_url }}" alt="User Photo">
-            <p>Upload date: {{ photo.created_at }}</p>
+
+            <p>About this day: {{ photo.description }}</p>
         </li>
         {% endfor %}
     </ul>

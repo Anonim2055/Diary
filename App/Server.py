@@ -53,6 +53,7 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    description = request.form.get("description")
     file = request.files['file']
     user_id = request.form.get("user_id")
     if file.filename == '':
@@ -60,18 +61,7 @@ def upload_file():
 
     response = img_up(file)
     #print(response)
-
-    upload_time = get_time()
-    try:
-        db.images.insert_one({
-        "img_url": response['img_url'],
-        "timestamp": upload_time,
-        "user_id": user_id
-    })
-    except Exception:
-
-        return '', 503
-    page = str("user_photos/"+user_id)
+    page = str("/desc?user_id="+user_id+"&img_url="+response['img_url'])
     return redirect(page)
     #return jsonify(response['status'])
 
@@ -81,6 +71,35 @@ def uf():
     if user_id == None:
         return redirect('/')
     return render_template('up.html', user_id=user_id)
+
+@app.route('/desc', methods=['GET'])
+def desc_get():
+    user_id = request.args.get('user_id')
+    img_url = request.args.get('img_url')
+    return render_template("description.html", user_id=user_id, img_url=img_url)
+
+
+@app.route('/desc', methods=['POST'])
+def desc_load():
+    description = request.form.get("description")
+    user_id = request.form.get("user_id")
+    img_url = request.form.get("img_url")
+    upload_time = get_time()
+    try:
+        db.images.insert_one({
+        "img_url": img_url,
+        "timestamp": upload_time,
+        "user_id": user_id,
+        "description": description
+    })
+    except Exception:
+
+        return '', 503
+    page = str("user_photos/" + user_id)
+    return redirect(page)
+
+
+
 
 
 @app.route('/users', methods=['GET'])
@@ -139,13 +158,6 @@ def form_example():
     #return response
     return f'Hello {name}, your email is {email}, your pass is{password}'
 
-
-@app.route('/error')
-def always_return_500():
-    # return status code 500
-    return '', 500
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
@@ -153,34 +165,34 @@ def page_not_found(e):
 
 @app.route("/get_images", methods=['GET'])
 def get_image_url(user_id=None):
-    us_id2=user_id
+    us_id2 = user_id
     user_id = request.args.get("user_id")
     if user_id == None:
-        user_id=us_id2
+        user_id = us_id2
     # search every 'user id'
     user_data_cursor = db.images.find({"user_id": user_id})
-
     user_data_list = []
-
     # add everything to list
     for user_data in user_data_cursor:
         img_url = user_data.get("img_url", "URL not available")
         created_at_timestamp = user_data.get("timestamp", None)
         created_at = None
+        description = user_data.get('description', None)
         if created_at_timestamp:
             created_at = datetime.datetime.fromtimestamp(created_at_timestamp).strftime('%Y-%m-%d')
 
         user_data_list.append({
             "user_id": user_id,
             "img_url": img_url,
-            "created_at": created_at
+            "created_at": created_at,
+            "description": description
         })
     print(user_data_list)
     if user_data_list:
-        print (user_data_list)
+        print(user_data_list)
         return user_data_list
     else:
-        print ('bad')
+        print('bad')
         return ({"message": "User ID not found"}), 200
 
     #except Exception as e:
@@ -193,11 +205,11 @@ def get_image_url(user_id=None):
 @app.route("/user_photos/<user_id>", methods=['GET'])
 def user_photos(user_id):
     print(user_id)
-    photos = (get_image_url(user_id))
-    print ('_____________')
-    print(photos)
+    data = (get_image_url(user_id))
     print('_____________')
-    return render_template("photos.html", photos=photos)
+    print(data)
+    print('_____________')
+    return render_template("photos.html", photos=data)
 
 
 if __name__ == "__main__":
