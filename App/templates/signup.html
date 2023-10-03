@@ -8,12 +8,11 @@
 </head>
 <body>
     <div class="container">
-        <form class="signup-form">
+        <form class="signup-form" method=POST action="signup">
             <h1>Sign Up to Diary</h1>
-            <input type="text" placeholder="Username" required>
-            <input type="email" placeholder="Email" required>
+            <input type="text"  name="username" placeholder="Username" required>
             <input type="password" placeholder="Password" required>
-            <input type="password" placeholder="Confirm Password" required>
+            <input type="password"  name="pass" placeholder="Confirm Password" required>
             <button type="submit">Sign Up </button>
             <p>Already have an account? <a href="login">Log In</a></p>
             <a href="home">Home page </a>

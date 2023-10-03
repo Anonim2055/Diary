@@ -1,5 +1,7 @@
+import bcrypt
 from pymongo import MongoClient
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, session
+
 from imgur_api import upload as img_up
 import requests
 import json
@@ -28,75 +30,106 @@ def hom():
 
 @app.route('/', methods=['GET'])
 def index():
+    try:
+        username = session['username']
+    except Exception:
+        username = None
 
-    return render_template('home.html')
+    return render_template('home.html', username=username)
 
 @app.route("/login", methods=['POST','GET'])
 def log():
-
+    if request.method == 'POST':
+        users = db.users
+        login_user = users.find_one({'name': request.form['username']})
+        print("login_user")
+        if login_user:
+            print('login_user')
+            if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
+                session['username'] = request.form['username']
+                return redirect('home')
     return render_template("login.html")
 
 
 @app.route("/signup", methods=['POST', 'GET'])
-def home():
+def signup():
+    if request.method == 'POST':
+        users = db.users
+        existing_user = users.find_one({'name': request.form['username']})
+
+        if existing_user is None:
+            hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
+            users.insert_one({
+                'name': request.form['username'],
+                'password': hashpass
+            })
+            session['username'] = request.form['username']
+            return redirect('home')
+
+        return 'That username already exists!'
 
     # Render the index.html template
     return render_template("signup.html")
-# @app.route('/index.html',methods=['GET'])
-#     def indexx()
-
-
-
-
-
-
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    file = request.files['file']
-    user_id = request.form.get("user_id")
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+    try :
+        user_id = session['username']
+        file = request.files['file']
 
-    response = img_up(file)
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        response = img_up(file)
     #print(response)
-    page = str("/desc?user_id="+user_id+"&img_url="+response['img_url'])
-    return redirect(page)
+        page = str("/desc?img_url="+response['img_url'])
+        return redirect(page)
+    except Exception:
+        redirect('/')
     #return jsonify(response['status'])
 
 @app.route('/upload', methods=['GET'])
 def uf():
-    user_id = request.args.get("user_id")
-    # if user_id == None:
-    #     return redirect('/')
-    return render_template('up.html', user_id=user_id)
+    try :
+        user_id = session['username']
+        #user_id = request.args.get("user_id")
+        # if user_id == None:
+        #     return redirect('/')
+        return render_template('up.html', user_id=user_id)
+    except Exception:
+        return redirect('/')
 
 @app.route('/desc', methods=['GET'])
 def desc_get():
-    user_id = request.args.get('user_id')
-    img_url = request.args.get('img_url')
-    return render_template("description.html", user_id=user_id, img_url=img_url)
-
+    try:
+        user_id = session['username']
+        img_url = request.args.get('img_url')
+        return render_template("description.html", user_id=user_id, img_url=img_url)
+    except Exception:
+        return redirect('/')
 
 @app.route('/desc', methods=['POST'])
 def desc_load():
-    description = request.form.get("description")
-    user_id = request.form.get("user_id")
-    img_url = request.form.get("img_url")
-    upload_time = get_time()
     try:
-        db.images.insert_one({
-        "img_url": img_url,
-        "timestamp": upload_time,
-        "user_id": user_id,
-        "description": description
-    })
+        user_id = session['username']
+        description = request.form.get("description")
+
+        img_url = request.form.get("img_url")
+        upload_time = get_time()
+        try:
+            db.images.insert_one({
+            "img_url": img_url,
+            "timestamp": upload_time,
+            "user_id": user_id,
+            "description": description
+        })
+        except Exception:
+
+            return '', 503
+        page = str("user_photos/" + user_id)
+        return redirect(page)
     except Exception:
-
-        return '', 503
-    page = str("user_photos/" + user_id)
-    return redirect(page)
-
+        redirect('/')
 
 
 
@@ -108,7 +141,7 @@ def utest():
     if istrue == "true":
 
         return "this is true", 200
-    elif istrue == "false" :
+    elif istrue == "false":
 
         return "this is  not true", 200
     else:
@@ -142,27 +175,14 @@ def sUp():
 
 
 
-@app.route('/form-example', methods=['POST'])
-def form_example():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    name = request.form.get('name')
-    user = dict({'name': name, 'email': email, 'password' : password})
-    url = 'http://127.0.0.1:5000/users'
-    nuser = json.dumps(user)
-    headers = {
-        "Content-Type": "application/json"
-    }
-    response = requests.post(url, data=nuser, headers=headers)
-    #return response
-    return f'Hello {name}, your email is {email}, your pass is{password}'
+#
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
 
-@app.route("/get_images", methods=['GET'])
+#@app.route("/get_images", methods=['GET'])
 def get_image_url(user_id=None):
     us_id2 = user_id
     user_id = request.args.get("user_id")
@@ -197,25 +217,48 @@ def get_image_url(user_id=None):
     #except Exception as e:
         #return jsonify({"error": str(e)}), 500
 
-
-
-
-
 @app.route("/user_photos/<user_id>", methods=['GET'])
 def user_photos(user_id):
-    print(user_id)
-    data = (get_image_url(user_id))
-    print('_____________')
-    print(data)
-    print('_____________')
-    return render_template("photos.html", photos=data)
+    #print(user_id)
+    try:
+        if user_id == session['username']:
 
+            data = (get_image_url(user_id))
+            print('_____________')
+            print(data)
+            print('_____________')
+            return render_template("photos.html", photos=data)
+        else:
+            page="/user_photos/"+session['username']
+            return redirect(page)
+    except Exception:
+        return redirect('/')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.secret_key = 'mysecret'
+    app.run(host='localhost', debug=True)
+
+
+
+
+
+#@app.route('/form-example', methods=['POST'])
+# def form_example():
+#     email = request.form.get('email')
+#     password = request.form.get('password')
+#     name = request.form.get('name')
+#     user = dict({'name': name, 'email': email, 'password' : password})
+#     url = 'http://127.0.0.1:5000/users'
+#     nuser = json.dumps(user)
+#     headers = {
+#         "Content-Type": "application/json"
+#     }
+#     response = requests.post(url, data=nuser, headers=headers)
+#     #return response
+#     return f'Hello {name}, your email is {email}, your pass is{password}'
+
 
 # def imgur(file):
-
 #     client_id=cid
 #     headers = {'Authorization': f'Client-ID {client_id}'}
 #     response = request.post('https://api.imgur.com/3/image', headers=headers, files=file)
