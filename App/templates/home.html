@@ -66,22 +66,19 @@
 <body>
     <!-- Use a div element to center the content -->
     <div class="container">
-        <!-- Use an h1 element to display the greeting -->
             {% if username %}
                 <span style="font-size: 24px;">Hello {{ username }}</span>
             {% endif %}
+            <!-- Use an h1 element to display the greeting -->
         <h1>
-
-            <!-- Use a conditional expression to display the username if it's not None -->
             Welcome to I-Diary
 
         </h1>
         <!-- Use a p element to display a short introduction -->
-        <p>I-Diary is a personal journal app that helps you record your thoughts, feelings, and experiences. You can write, draw, or speak your entries, and I-Diary will save them for you. You can also add a photo of the day every day.</p>
-        <!-- Use a button element to start the app -->
-
+        <p>I-Diary is a personal journal app that helps you record your thoughts, feelings, and experiences. You can write your entries, and I-Diary will save them for you. You can also add a photo of the day every day.</p>
+        <!-- Use a button element -->
         {% if username %}
-        <button onclick="upload()">Upload</button>
+        <button onclick="upload()">Upload new photo</button>
         <button onclick="diary()">My Diary</button>
         <button onclick="logout()">Logout</button>
         {% else %}
@@ -89,33 +86,24 @@
         <button onclick="logIn()">Login</button>
         {% endif %}
     </div>
-    <!-- Use a script element to define the startApp function -->
+    <!-- Use a script element to define functions -->
     <script>
-        // Define a function that redirects the user to the app page
+        // Define a function
         function startApp() {
             window.location.href = "/signup";
         }
-    </script>
-    <script>
-        // Define a function that redirects the user to the app page
         function logIn() {
             window.location.href = "/login";
         }
-    </script>
-    <script>
-        // Define a function that redirects the user to the app page
         function upload() {
             window.location.href = "/upload";
         }
-    </script>
-    <script>
-        // Define a function that redirects the user to the app page
+        function upload() {
+            window.location.href = "/upload";
+        }
         function diary() {
             window.location.href = "/user_photos/2";
         }
-    </script>
-    <script>
-        // Define a function that redirects the user to the app page
         function logout() {
             window.location.href = "/logout";
         }

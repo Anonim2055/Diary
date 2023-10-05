@@ -3,6 +3,9 @@
 <head>
     <title>User Photos</title>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             text-align: center;
         }
@@ -67,7 +70,7 @@
 {% endif %}
 
     <script>
-        // Define a function that redirects the user to the app page
+        // Define a function
         function upload() {
             window.location.href = "/upload";
         }

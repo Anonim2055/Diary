@@ -90,9 +90,9 @@ def upload_file():
             return jsonify({'error': 'No selected file'}), 400
 
         response = img_up(file)
-
+        session['img_url'] = response['img_url']
     #print(response)
-        page = str("/desc?img_url="+response['img_url'])
+        page = str("/desc")
         return redirect(page)
     except Exception:
         redirect('/')
@@ -100,31 +100,32 @@ def upload_file():
 
 @app.route('/upload', methods=['GET'])
 def uf():
-    try :
+    try:
         user_id = session['username']
         #user_id = request.args.get("user_id")
         # if user_id == None:
         #     return redirect('/')
-        return render_template('up.html', user_id=user_id)
+        return render_template('up.html')
     except Exception:
         return redirect('/')
 
 @app.route('/desc', methods=['GET'])
 def desc_get():
     try:
+        img_url = session['img_url']
         user_id = session['username']
-        img_url = request.args.get('img_url')
-        return render_template("description.html", user_id=user_id, img_url=img_url)
+        return render_template("description.html")
     except Exception:
         return redirect('/')
 
 @app.route('/desc', methods=['POST'])
 def desc_load():
     try:
+        img_url = session['img_url']
         user_id = session['username']
         description = request.form.get("description")
 
-        img_url = request.form.get("img_url")
+        #img_url = request.form.get("img_url")
         upload_time = get_time()
         try:
             db.images.insert_one({
@@ -133,56 +134,14 @@ def desc_load():
             "user_id": user_id,
             "description": description
         })
+            session.pop('img_url', None)
         except Exception:
 
             return '', 503
         page = str("user_photos/" + user_id)
         return redirect(page)
     except Exception:
-        redirect('/')
-
-
-
-
-@app.route('/users', methods=['GET'])
-def utest():
-    istrue = request.args.get("istrue")
-    # check if istrue is true
-    if istrue == "true":
-
-        return "this is true", 200
-    elif istrue == "false":
-
-        return "this is  not true", 200
-    else:
-
-        return "Didn't get param", 200
-
-@app.route('/users',methods=['POST'])
-def add_user():
-
-    body = request.json
-    required_keys = {"name", "email", "password"}
-    # check if there's any invalid key in the request body
-    if set(body.keys()) != required_keys:
-        return jsonify({"error": "Invalid or missing field in request body"}), 400
-        # return error message with 400 status code
-
-    result = db.users.insert_one({
-        "email": body["email"],
-        "name": body["name"],
-        "password": body["password"]
-    })
-    resp = jsonify({
-        "id": str(result.inserted_id),
-        "message": "user added"
-    })
-    return resp
-
-@app.route('/test', methods=['GET'])
-def sUp():
-
-    return render_template('signup_post_test.html')
+        return redirect('/')
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -285,3 +244,40 @@ if __name__ == "__main__":
 #         # Failed to upload the image
 #         print("Image upload failed. Status code:", response.status_code)
 #         return None
+
+#@app.route('/users',methods=['POST'])
+# def add_user():
+#
+#
+#     body = request.json
+#     required_keys = {"name", "email", "password"}
+#     # check if there's any invalid key in the request body
+#     if set(body.keys()) != required_keys:
+#         return jsonify({"error": "Invalid or missing field in request body"}), 400
+#         # return error message with 400 status code
+#
+#     result = db.users.insert_one({
+#         "email": body["email"],
+#         "name": body["name"],
+#         "password": body["password"]
+#     })
+#     resp = jsonify({
+#         "id": str(result.inserted_id),
+#         "message": "user added"
+#     })
+#     return resp
+
+# @app.route('/users', methods=['GET'])
+# def utest():
+#     istrue = request.args.get("istrue")
+#
+#     # check if istrue is true
+#     if istrue == "true":
+#
+#         return "this is true", 200
+#     elif istrue == "false":
+#
+#         return "this is  not true", 200
+#     else:
+#
+#         return "Didn't get param", 200

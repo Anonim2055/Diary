@@ -32,12 +32,6 @@
             margin: 20px;
         }
 
-        /* Центрировать изображения и текст внутри списка */
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
         li {
             display: flex;
             flex-direction: column;
@@ -58,17 +52,12 @@
             height: 200px;
         }
 
-        /* Стили для формы */
+        /* form style */
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
-        form p {
-            display: none; /* Скрыть текст "Choose image to upload:" */
-        }
-
         form input[type="file"] {
             margin: 10px 0;
         }
@@ -107,7 +96,6 @@
         <button onclick="MyD()">My diary</button>
         <button onclick="logout()">Logout</button>
     </div>
-
     <form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm" onsubmit="showLoading()">
         <input type="hidden" name="user_id" value="{{ user_id }}">
         <p>Choose image to upload:</p>
