@@ -37,14 +37,23 @@ def index():
 
     return render_template('home.html', username=username)
 
+@app.route("/logout", methods=['GET'])
+def logout():
+    try:
+        if session['username']:
+            session.pop('username', None)
+    except Exception:
+        return redirect('/')
+    return redirect('/')
+
 @app.route("/login", methods=['POST','GET'])
 def log():
     if request.method == 'POST':
         users = db.users
         login_user = users.find_one({'name': request.form['username']})
-        print("login_user")
+        print("if1")
         if login_user:
-            print('login_user')
+            print('if2')
             if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
                 session['username'] = request.form['username']
                 return redirect('home')
