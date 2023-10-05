@@ -17,9 +17,9 @@ try:
 #check if mongoDB work
     mongo = MongoClient(host='localhost', port=27017, serverSelectionTimeoutMs=5000)
     db = mongo.diary
-    print("Mongo Connect")
+    print("MongoDb Connected")
 except Exception:
-    print("Unable")
+    print("Unable to connect to MongoDb")
 
 @app.route('/home', methods=['GET'])
 def home():
@@ -74,7 +74,6 @@ def signup():
 
         return 'That username already exists!'
 
-    # Render the index.html template
     return render_template("signup.html")
 
 @app.route('/upload', methods=['POST'])
@@ -88,12 +87,11 @@ def upload_file():
 
         response = img_up(file)
         session['img_url'] = response['img_url']
-    #print(response)
+        print("response is", response)
         page = str("/desc")
         return redirect(page)
     except Exception:
-        redirect('/')
-    #return jsonify(response['status'])
+        return redirect('/')
 
 @app.route('/upload', methods=['GET'])
 def uf():
@@ -151,7 +149,7 @@ def get_image_url(user_id=None):
     user_id = request.args.get("user_id")
     if user_id == None:
         user_id = us_id2
-    # search every 'user id'
+    # search every "user_id"
     user_data_cursor = db.images.find({"user_id": user_id})
     user_data_list = []
     # add everything to list
@@ -177,12 +175,10 @@ def get_image_url(user_id=None):
         print('bad')
         return ({"message": "User ID not found"})
 
-    #except Exception as e:
-        #return jsonify({"error": str(e)}), 500
 
 @app.route("/user_photos/<user_id>", methods=['GET'])
 def user_photos(user_id):
-    #print(user_id)
+    print("user id is", user_id)
     try:
         if user_id == session['username']:
 
@@ -202,7 +198,19 @@ def user_photos(user_id):
             return redirect(page)
     except Exception:
         return redirect('/')
-
+@app.route('/ap/home', methods=['GET'])
+def gh():
+    return redirect('/')
+@app.route('/ap/<user_id>', methods=['GET'])
+def admin_photo(user_id):
+    try:
+        if session['username'] == "admin":
+            data = (get_image_url(user_id))
+            return render_template("photos.html", photos=data)
+        return render_template("404.html")
+    except Exception:
+        return render_template("404.html")
+    return render_template("404.html")
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
     app.run(host='localhost', debug=True)
