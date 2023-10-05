@@ -1,10 +1,7 @@
 import bcrypt
 from pymongo import MongoClient
 from flask import Flask, request, jsonify, render_template, redirect, session
-
 from imgur_api import upload as img_up
-import requests
-import json
 import datetime
 from get_timestamp import get_current_timestamp as get_time
 
@@ -25,7 +22,7 @@ except Exception:
     print("Unable")
 
 @app.route('/home', methods=['GET'])
-def hom():
+def home():
     return redirect('/')
 
 @app.route('/', methods=['GET'])
