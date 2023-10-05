@@ -3,29 +3,80 @@
 <head>
     <title>User Photos</title>
     <style>
-        /* Define a fixed width and height for the images */
-        img {
-            width: 300px; /* Adjust the width as needed */
-            height: 200px; /* Adjust the height as needed */
+        body {
+            text-align: center;
         }
-        /* Add some spacing between list items */
+
+        .header {
+            background-color: white;
+            padding: 10px;
+        }
+
+        .header button {
+            color: white;
+            background-color: #003366;
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            /* Use a medium font size */
+            font-size: 18px;
+            /* Add some padding around the text */
+            padding: 10px 20px;
+            /* Add some margin around the button */
+            margin: 20px;
+        }
+
+        /* Центрировать изображения и текст внутри списка */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
         li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 20px;
+        }
+
+        img {
+            width: 400px;
+            height: 300px;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <button onclick="home()">Home</button>
+        <button onclick="upload()">Upload new Photo</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+{% if photos and photos|length > 0 %}
     <h1>Your diary</h1>
+<ul>
+    {% for photo in photos %}
+    <li>
+        <p>Date: {{ photo.created_at }}</p>
+        <img src="{{ photo.img_url }}" alt="User Photo">
+        <p>About this day: {{ photo.description }}</p>
+    </li>
+    {% endfor %}
+</ul>
+    {% else %}
+    <h1>Your diary is empty, go and upload new photo!</h1>
+{% endif %}
 
-    <ul>
-        {% for photo in photos %}
-        <li>
-            <p>Date: {{ photo.created_at }}</p>
-            <img src="{{ photo.img_url }}" alt="User Photo">
-
-            <p>About this day: {{ photo.description }}</p>
-        </li>
-        {% endfor %}
-    </ul>
+    <script>
+        // Define a function that redirects the user to the app page
+        function upload() {
+            window.location.href = "/upload";
+        }
+        function logout() {
+            window.location.href = "/logout";
+        }
+        function home() {
+        window.location.href = "/";
+        }
+    </script>
 </body>
 </html>

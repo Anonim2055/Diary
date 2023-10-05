@@ -5,10 +5,44 @@
     <style>
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
+        }
+
+        .header {
+            background-color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .header button {
+            color: white;
+            background-color: #003366;
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            /* Use a medium font size */
+            font-size: 18px;
+            /* Add some padding around the text */
+            padding: 10px 20px;
+            /* Add some margin around the button */
+            margin: 20px;
+        }
+
+        /* Центрировать изображения и текст внутри списка */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         #loading {
@@ -23,24 +57,66 @@
             width: 200px;
             height: 200px;
         }
+
+        /* Стили для формы */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form p {
+            display: none; /* Скрыть текст "Choose image to upload:" */
+        }
+
+        form input[type="file"] {
+            margin: 10px 0;
+        }
+
+
+        }
     </style>
     <script>
         function showLoading() {
             document.getElementById("loading").style.display = "block";
-            document.querySelector('form').style.display = "none"; //
+            document.querySelector('form').style.display = "none";
+        }
+                function MyD() {
+            window.location.href = "/user_photos/2";
+        }
+        function logout() {
+            window.location.href = "/logout";
+        }
+        function home() {
+        window.location.href = "/";
+        }
+                function enableUploadButton() {
+            var fileInput = document.querySelector('input[name="file"]');
+            var uploadButton = document.getElementById('uploadButton');
+
+            if (fileInput.files.length > 0) {
+                uploadButton.removeAttribute('disabled');
+            } else {
+                uploadButton.setAttribute('disabled', 'disabled');
+            }
         }
     </script>
 </head>
-<body>
-<form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm" onsubmit="showLoading()">
-    <p>Choose image to upload:</p>
-    <input type="file" name="file" accept="image/*">
-    <input type="hidden" name="user_id" value="{{ user_id }}">
-    <input type="submit" value="Upload">
-</form>
-<div id="loading">
-    <img src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading">
-    <p>Loading...</p>
-</div>
+    <div class="header">
+        <button onclick="home()">Home</button>
+        <button onclick="MyD()">My diary</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <form action="upload" method="POST" enctype="multipart/form-data" name="uploadForm" onsubmit="showLoading()">
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        <p>Choose image to upload:</p>
+        <input type="file" name="file" accept="image/*" onchange="enableUploadButton()">
+        <input type="submit" value="Upload" id="uploadButton" disabled>
+    </form>
+    <div id="loading">
+        <img src="{{ url_for('static', filename='images/loading.gif') }}" alt="Loading">
+        <p>Loading...</p>
+    </div>
 </body>
 </html>

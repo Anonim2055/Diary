@@ -90,6 +90,7 @@ def upload_file():
             return jsonify({'error': 'No selected file'}), 400
 
         response = img_up(file)
+
     #print(response)
         page = str("/desc?img_url="+response['img_url'])
         return redirect(page)
@@ -159,6 +160,7 @@ def utest():
 
 @app.route('/users',methods=['POST'])
 def add_user():
+
     body = request.json
     required_keys = {"name", "email", "password"}
     # check if there's any invalid key in the request body
@@ -177,14 +179,10 @@ def add_user():
     })
     return resp
 
-
 @app.route('/test', methods=['GET'])
 def sUp():
+
     return render_template('signup_post_test.html')
-
-
-
-#
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -221,7 +219,7 @@ def get_image_url(user_id=None):
         return user_data_list
     else:
         print('bad')
-        return ({"message": "User ID not found"}), 200
+        return ({"message": "User ID not found"})
 
     #except Exception as e:
         #return jsonify({"error": str(e)}), 500
@@ -236,9 +234,15 @@ def user_photos(user_id):
             print('_____________')
             print(data)
             print('_____________')
-            return render_template("photos.html", photos=data)
+            try:
+                if data['message'] == "User ID not found":
+                    #print("check")
+                    return render_template("photos.html")
+            except Exception:
+
+                return render_template("photos.html", photos=data)
         else:
-            page="/user_photos/"+session['username']
+            page = "/user_photos/"+session['username']
             return redirect(page)
     except Exception:
         return redirect('/')

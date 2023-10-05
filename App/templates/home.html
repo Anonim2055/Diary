@@ -31,7 +31,7 @@
         /* Define the style for the h1 element */
         h1 {
             /* Use a dark blue text color */
-            color: #003366;
+            color: C;
             /* Use a large font size */
             font-size: 36px;
             /* Align the text to the center */
@@ -79,12 +79,14 @@
         <!-- Use a p element to display a short introduction -->
         <p>I-Diary is a personal journal app that helps you record your thoughts, feelings, and experiences. You can write, draw, or speak your entries, and I-Diary will save them for you. You can also add a photo of the day every day.</p>
         <!-- Use a button element to start the app -->
-        <button onclick="startApp()">Signup</button>
-        <button onclick="logIn()">Login</button>
+
         {% if username %}
         <button onclick="upload()">Upload</button>
         <button onclick="diary()">My Diary</button>
         <button onclick="logout()">Logout</button>
+        {% else %}
+        <button onclick="startApp()">Signup</button>
+        <button onclick="logIn()">Login</button>
         {% endif %}
     </div>
     <!-- Use a script element to define the startApp function -->
