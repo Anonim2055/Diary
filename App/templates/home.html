@@ -87,27 +87,7 @@
         {% endif %}
     </div>
     <!-- Use a script element to define functions -->
-    <script>
-        // Define a function
-        function startApp() {
-            window.location.href = "/signup";
-        }
-        function logIn() {
-            window.location.href = "/login";
-        }
-        function upload() {
-            window.location.href = "/upload";
-        }
-        function upload() {
-            window.location.href = "/upload";
-        }
-        function diary() {
-            window.location.href = "/user_photos/2";
-        }
-        function logout() {
-            window.location.href = "/logout";
-        }
-    </script>
+<script src="{{ url_for('static', filename='home.js') }}"></script>
 </body>
 </html>
 

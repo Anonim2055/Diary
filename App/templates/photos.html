@@ -69,17 +69,6 @@
     <h1>Your diary is empty, go and upload new photo!</h1>
 {% endif %}
 
-    <script>
-        // Define a function
-        function upload() {
-            window.location.href = "/upload";
-        }
-        function logout() {
-            window.location.href = "/logout";
-        }
-        function home() {
-        window.location.href = "/";
-        }
-    </script>
+<script src="{{ url_for('static', filename='photos.js') }}"></script>
 </body>
 </html>
