@@ -52,3 +52,6 @@ a {
 a:hover {
     text-decoration: underline;
 }
+.error {
+    color: red;
+}

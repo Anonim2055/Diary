@@ -53,7 +53,9 @@ def log():
             print('if2')
             if bcrypt.hashpw(request.form['pass'].encode('utf-8'), login_user['password']) == login_user['password']:
                 session['username'] = request.form['username']
-                return redirect('home')
+                return redirect('/home')
+            else :
+                return render_template("login.html", wrong="kek")
     return render_template("login.html")
 
 
