@@ -12,7 +12,7 @@ def upload(file):
         imgur_response = response.json()
         #print(imgur_response)
         img_url = imgur_response['data']['link']
-        #print(img_url)
+        #print(img_url, "url")
         return {
             'img_url': img_url,
             'status': "uploaded"
