@@ -7,7 +7,7 @@ networks:
 version: '3'
 services:
   web:
-    image: app-image:9
+    image: app-image:11
     ports:
       - "3000:3000"
     expose:

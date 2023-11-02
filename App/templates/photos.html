@@ -61,6 +61,11 @@
     <li>
         <p>Date: {{ photo.created_at }}</p>
         <img src="{{ photo.img_url }}" alt="User Photo">
+        <p>         </p>
+        <form action="/del_photo" method="POST">
+        <input type="hidden" name="img_url" value="{{photo.img_url}}">
+        <input type="submit" value="Remove picture">
+    </form>
         <p>About this day: {{ photo.description }}</p>
     </li>
     {% endfor %}

@@ -15,13 +15,31 @@ app = Flask(__name__)
 # print ("dbport:","lol","dbhost:",dbhost)
 try:
 #check if mongoDB work
-    # mongo = MongoClient(host='127.0.0.1', port=27017, serverSelectionTimeoutMs=5000)
-    mongo = MongoClient(host='172.211.1.3', port=27017, serverSelectionTimeoutMs=5000)
+    mongo = MongoClient(host='127.0.0.1', port=27017, serverSelectionTimeoutMs=5000)
+    # mongo = MongoClient(host='172.211.1.3', port=27017, serverSelectionTimeoutMs=5000)
     db = mongo.diary
     print("MongoDb Connected")
 except Exception:
     print("Unable to connect to MongoDb")
 
+
+@app.route('/del_photo', methods=['POST'])
+def del_photo():
+    try:
+        if session['username']:
+            img_url = request.form['img_url']
+            doc = db.images.find_one({"img_url": img_url})
+
+            if doc:
+                db.images.delete_one(doc)
+
+                print(f"Block with img_url {img_url} deleted successfully.")
+
+            else:
+                print(f"No block with img_url {img_url} found.")
+            return redirect(('/user_photos/'+session['username']))
+    except Exception:
+        return redirect('/')
 @app.route('/home', methods=['GET'])
 def home():
     return redirect('/')
@@ -81,20 +99,20 @@ def signup():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    try :
-        user_id = session['username']
-        file = request.files['file']
+    # try :
+    user_id = session['username']
+    file = request.files['file']
 
-        if file.filename == '':
-            return jsonify({'error': 'No selected file'}), 400
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
 
-        response = img_up(file)
-        session['img_url'] = response['img_url']
-        print("response is", response)
-        page = str("/desc")
-        return redirect(page)
-    except Exception:
-        return redirect('/')
+    response = img_up(file)
+    session['img_url'] = response['img_url']
+    print("response is", response)
+    page = str("/desc")
+    return redirect(page)
+    # except Exception:
+    return redirect('/')
 
 @app.route('/upload', methods=['GET'])
 def uf():
