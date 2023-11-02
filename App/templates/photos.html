@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Photos</title>
+    <title>My photos</title>
     <style>
         html {
             scroll-behavior: smooth;
@@ -29,7 +29,7 @@
             margin: 20px;
         }
 
-        /* Центрировать изображения и текст внутри списка */
+        /* Center image and text */
         ul {
             list-style: none;
             padding: 0;
@@ -62,9 +62,18 @@
         <p>Date: {{ photo.created_at }}</p>
         <img src="{{ photo.img_url }}" alt="User Photo">
         <p>         </p>
-        <form action="/del_photo" method="POST">
+    <form action="/del_photo" method="POST">
         <input type="hidden" name="img_url" value="{{photo.img_url}}">
-        <input type="submit" value="Remove picture">
+        <input type="button" value="Remove picture" onclick="showConfirmation()">
+    </form>
+
+    <div id="confirmationModal" style="display: none;">
+        <p>Are you sure?</p>
+        <button onclick="confirmDelete()">Yes</button>
+        <button onclick="cancelDelete()">No</button>
+    </div>
+
+<script src="{{ url_for('static', filename='photos.js') }}"></script>
     </form>
         <p>About this day: {{ photo.description }}</p>
     </li>
@@ -74,6 +83,6 @@
     <h1>Your diary is empty, go and upload new photo!</h1>
 {% endif %}
 
-<script src="{{ url_for('static', filename='photos.js') }}"></script>
+
 </body>
 </html>
