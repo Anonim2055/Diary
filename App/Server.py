@@ -15,7 +15,8 @@ app = Flask(__name__)
 # print ("dbport:","lol","dbhost:",dbhost)
 try:
 #check if mongoDB work
-    mongo = MongoClient(host='localhost', port=27017, serverSelectionTimeoutMs=5000)
+    # mongo = MongoClient(host='127.0.0.1', port=27017, serverSelectionTimeoutMs=5000)
+    mongo = MongoClient(host='172.211.1.3', port=27017, serverSelectionTimeoutMs=5000)
     db = mongo.diary
     print("MongoDb Connected")
 except Exception:
@@ -215,7 +216,7 @@ def admin_photo(user_id):
     return render_template("404.html")
 if __name__ == "__main__":
     app.secret_key = 'mysecret'
-    app.run(host='localhost', debug=True)
+    app.run(host='0.0.0.0',port=3000, debug=True)
 
 
 
