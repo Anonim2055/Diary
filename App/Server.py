@@ -22,6 +22,16 @@ try:
 except Exception:
     print("Unable to connect to MongoDb")
 
+@app.route('/change', methods=['POST'])
+def change_text():
+    try:
+        if session['username']:
+            text = request.form['text']
+            description = request.form['desc']
+        db.images.update_one({'description': description}, {'$set': {'description': text}})
+        return redirect(('/user_photos/'+session['username']))
+    except Exception:
+        return redirect('/')
 
 @app.route('/del_photo', methods=['POST'])
 def del_photo():

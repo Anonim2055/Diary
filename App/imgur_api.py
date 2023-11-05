@@ -1,10 +1,11 @@
 import requests
-
+from seed import cid as id
 
 
 def upload(file):
-    cid = open('cid', 'r').read()
+    # cid = open('cid', 'r').read()
         # cid = str(t_id.read())
+    cid = id
     headers = {'Authorization': f'Client-ID {cid}'} #it has to be "cid" file with client id for imgur in it
     response = requests.post('https://api.imgur.com/3/image', headers=headers, files={'image': file})
     #print(response)

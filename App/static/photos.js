@@ -22,3 +22,7 @@
             var modal = document.getElementById("confirmationModal");
             modal.style.display = "none";
         }
+                function showInputField() {
+            var inputField = document.getElementById("inputField");
+            inputField.style.display = "block";
+        }

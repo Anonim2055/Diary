@@ -44,8 +44,9 @@
 
         img {
             width: 400px;
-            height: 300px;
+            height: 400px;
         }
+
     </style>
 </head>
 <body>
@@ -72,14 +73,26 @@
         <button onclick="confirmDelete()">Yes</button>
         <button onclick="cancelDelete()">No</button>
     </div>
-
-<script src="{{ url_for('static', filename='photos.js') }}"></script>
     </form>
         <p>About this day: {{ photo.description }}</p>
+
     </li>
+           <button id="changeButton" onclick="showInputField()">Change Description</button>
+
+    <div id="inputField" style="display: none;">
+        <form action="/change" method="POST">
+            <label for="newDescription">New Description:</label>
+            <textarea id="newDescription" name="text" rows="4" cols="50"></textarea>
+            <input type="hidden" name="desc" value="{{photo.description}}">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+<script src="{{ url_for('static', filename='photos.js') }}"></script>
     {% endfor %}
 </ul>
     {% else %}
+    <script src="{{ url_for('static', filename='photos.js') }}"></script>
     <h1>Your diary is empty, go and upload new photo!</h1>
 {% endif %}
 
